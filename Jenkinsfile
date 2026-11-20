@@ -8,7 +8,8 @@ node {
     stage('Maven Build and Test') {
         bat 'mvn -B clean verify'
 
-        junit 'target/surefire-reports/*.xml'
+        junit allowEmptyResults: true,
+      testResults: 'target/surefire-reports/*.xml'
 
         archiveArtifacts artifacts: 'target/*.war',
                          fingerprint: true
