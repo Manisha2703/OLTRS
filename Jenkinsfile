@@ -27,19 +27,24 @@ node {
         }
     }
 
-    stage('Docker Push') {
-        withCredentials([
-            usernamePassword(
-                credentialsId: 'dockerhub-creds',
-                usernameVariable: 'DOCKERHUB_USER',
-                passwordVariable: 'DOCKERHUB_TOKEN'
-            )
-        ]) {
-            bat '@echo off\n docker login --username %DOCKERHUB_USER% --password-stdin <nul'
-            bat 'docker push %DOCKERHUB_USER%/oltrs:%BUILD_NUMBER%'
-            bat 'docker push %DOCKERHUB_USER%/oltrs:latest'
-        }
+
+stage('Docker Push') {
+    withCredentials([
+        string(
+            credentialsId: 'dockerhub-token',
+            variable: 'DOCKERHUB_TOKEN'
+        )
+    ]) {
+        bat '@echo off\necho %DOCKERHUB_TOKEN%| docker login --username manishaa12 --password-stdin'
+
+        bat 'docker push manishaa12/oltrs:%BUILD_NUMBER%'
+
+        bat 'docker push manishaa12/oltrs:latest'
+
+        bat 'docker logout'
     }
+}
+
 
     echo 'OLTRS CI/CD Pipeline completed successfully'
 }
